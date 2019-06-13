@@ -1,7 +1,15 @@
 // On initialise la latitude et la longitude de Paris (centre de la carte)
+var macarte = null;
 var lat = 48.851245;
 var lon = 2.382195;
-var macarte = null;
+const close = document.querySelector('#close');
+const content = document.querySelector('#content');
+const title = document.querySelector('#content h1');
+const category = document.querySelector('#content p');
+close.addEventListener('click', () => {
+    content.style.left = '-100%';
+});
+
 // Fonction d'initialisation de la carte
 function initMap() {
     // Créer l'objet "macarte" et l'insèrer dans l'élément HTML qui a l'ID "map"
@@ -13,7 +21,14 @@ function initMap() {
         minZoom: 1,
         maxZoom: 20
     }).addTo(macarte);
+    var markersLayer = L.featureGroup().addTo(macarte);
     var villes = [
+        {
+            "name" : "ECV Digital",
+            "category" : "ecole",
+            "latitude" : "48.8510000",
+            "longitude" : "2.3826164"
+        },
         {
             "name" : "Bluebird",
             "category" : "bar",
@@ -58,15 +73,36 @@ function initMap() {
         }
     ];
 
-    const content = document.querySelector('#content');
+    const restaurant = L.icon({
+        iconUrl : 'https://cdn1.iconfinder.com/data/icons/social-messaging-ui-color/254000/67-512.png',
+        iconSize : [65, 65],
+        iconAnchor: [22,60],         
+    });
+    const school = L.icon({
+        iconUrl : 'https://image.flaticon.com/icons/svg/33/33622.svg',
+        iconSize : [43, 43],
+        iconAnchor: [22,60],         
+    });
+ 
 
     for (ville of villes) {
-        var marker = L.marker([ville.latitude, ville.longitude]).addTo(macarte);
-        marker.bindPopup(`${ville.category} - ${ville.name}`) 
+        if (ville.category === "restaurant") {
+            var marker = L.marker([ville.latitude, ville.longitude], {icon: restaurant}).addTo(markersLayer);
+        } else if (ville.category === "ecole") {
+            var marker = L.marker([ville.latitude, ville.longitude], {icon: school}).addTo(markersLayer);
+        } else {
+            var marker = L.marker([ville.latitude, ville.longitude]).addTo(markersLayer);
+        }
+        marker.options.name = ville.name;
+        marker.options.category = ville.category;
     }
+    markersLayer.on("click", ({ layer : { options } })  => {
+        content.style.left = 0;
+        title.textContent = options.name;
+        category.textContent = options.category;
+    });
 
 }
 window.onload = function(){
-    // Fonction d'initialisation qui s'exécute lorsque le DOM est chargé
     initMap(); 
 };

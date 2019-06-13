@@ -2,5 +2,16 @@ body{
     margin:0 auto;
 }
 #map{
+    position: absolute;
+    z-index: 0;
     height: 500px;
+    width: 100%;
+}
+#content{
+    position: absolute;
+    height: 500px;
+    width: 100%;
+    left: -100%;
+    transition: 1s ease;
+    background: #fff;
 }
