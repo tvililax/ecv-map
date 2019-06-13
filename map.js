@@ -6,14 +6,19 @@ const close = document.querySelector('#close');
 const content = document.querySelector('#content');
 const title = document.querySelector('#content h1');
 const category = document.querySelector('#content p');
+const restaurantList = document.querySelector('#restaurant');
+const bar = document.querySelector('#bar');
+const reset = document.querySelector('#reset');
+let filter = '';
 close.addEventListener('click', () => {
     content.style.left = '-100%';
 });
 
 // Fonction d'initialisation de la carte
-function initMap() {
+function initMap(disabled = null) {
+    macarte = L.map('map', { zoomControl:false }).setView([lat, lon], 16);
+
     // Créer l'objet "macarte" et l'insèrer dans l'élément HTML qui a l'ID "map"
-    macarte = L.map('map').setView([lat, lon], 16);
     // Leaflet ne récupère pas les cartes (tiles) sur un serveur par défaut. Nous devons lui préciser où nous souhaitons les récupérer. Ici, openstreetmap.fr
     L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
         // Il est toujours bien de laisser le lien vers la source des données
@@ -21,7 +26,10 @@ function initMap() {
         minZoom: 1,
         maxZoom: 20
     }).addTo(macarte);
-    var markersLayer = L.featureGroup().addTo(macarte);
+    var barLayer = L.featureGroup().addTo(macarte);
+    var schoolLayer = L.featureGroup().addTo(macarte);
+    var restaurantLayer = L.featureGroup().addTo(macarte);
+    
     var villes = [
         {
             "name" : "ECV Digital",
@@ -73,6 +81,7 @@ function initMap() {
         }
     ];
 
+
     const restaurant = L.icon({
         iconUrl : 'https://cdn1.iconfinder.com/data/icons/social-messaging-ui-color/254000/67-512.png',
         iconSize : [65, 65],
@@ -84,19 +93,39 @@ function initMap() {
         iconAnchor: [22,60],         
     });
  
-
+    restaurantList.addEventListener('click', () => {
+        barLayer.clearLayers();
+        filter = "bar";
+    });
+    
+    bar.addEventListener('click', () => {
+        restaurantLayer.clearLayers();
+        filter = "restaurant";
+    });
     for (ville of villes) {
-        if (ville.category === "restaurant") {
-            var marker = L.marker([ville.latitude, ville.longitude], {icon: restaurant}).addTo(markersLayer);
-        } else if (ville.category === "ecole") {
-            var marker = L.marker([ville.latitude, ville.longitude], {icon: school}).addTo(markersLayer);
+        if (ville.category === "restaurant" && (disabled === "restaurant" || disabled === null)) {
+            var marker = L.marker([ville.latitude, ville.longitude], {icon: restaurant}).addTo(restaurantLayer);
+        } else if (ville.category === "ecole" && (disabled === "ecole" || disabled === null)) {
+            var marker = L.marker([ville.latitude, ville.longitude], {icon: school}).addTo(schoolLayer);
+        } else if (ville.category === "bar" && (disabled === "bar" || disabled === null)) {
+            var marker = L.marker([ville.latitude, ville.longitude]).addTo(barLayer);
         } else {
-            var marker = L.marker([ville.latitude, ville.longitude]).addTo(markersLayer);
+            continue;
         }
         marker.options.name = ville.name;
         marker.options.category = ville.category;
     }
-    markersLayer.on("click", ({ layer : { options } })  => {
+    restaurantLayer.on("click", ({ layer : { options } })  => {
+        content.style.left = 0;
+        title.textContent = options.name;
+        category.textContent = options.category;
+    });
+    schoolLayer.on("click", ({ layer : { options } })  => {
+        content.style.left = 0;
+        title.textContent = options.name;
+        category.textContent = options.category;
+    });
+    barLayer.on("click", ({ layer : { options } })  => {
         content.style.left = 0;
         title.textContent = options.name;
         category.textContent = options.category;
