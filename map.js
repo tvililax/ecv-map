@@ -13,21 +13,58 @@ function initMap() {
         minZoom: 1,
         maxZoom: 20
     }).addTo(macarte);
-    var villes = {
-        "ECV Digital": { "lat": lat, "lon": lon },
-        "Bluebird": { "lat": 48.851323, "lon": 2.380601 },
-        "Osteria Ferrara": { "lat": 48.8512838, "lon": 2.3821977 },
-        "Les Funambules Paris": { "lat": 48.8510818, "lon": 2.3832197 },
-        "Le Mansouria": { "lat": 48.850588, "lon": 2.3834752 },
-        "En attendant l'or": { "lat": 48.850242, "lon": 2.382192 },
-        "Le bidule": { "lat": 48.850244, "lon": 2.383676 },
-        "Les blouses blanches": { "lat": 48.8500948, "lon": 2.3820225 }
-    };
-for (ville in villes) {
-    var marker = L.marker([villes[ville].lat, villes[ville].lon]).addTo(macarte);
-    // Nous ajoutons la popup. A noter que son contenu (ici la variable ville) peut être du HTML
-    marker.bindPopup(ville);
-}  
+    var villes = [
+        {
+            "name" : "Bluebird",
+            "category" : "bar",
+            "latitude" : "48.851323",
+            "longitude" : "2.380601"
+        },
+        {
+            "name" : "Osteria Ferrara",
+            "category" : "restaurant",
+            "latitude" : "48.8512838",
+            "longitude" : "2.3821977"
+        },
+        {
+            "name" : "Les Funambules Paris",
+            "category" : "restaurant",
+            "latitude" : "48.8510818",
+            "longitude" : "2.3832197"
+        },
+        {
+            "name" : "Le Mansouria",
+            "category" : "restaurant",
+            "latitude" : "48.8512949",
+            "longitude" : "2.3826164"
+        },
+        {
+            "name" : "En attendant l'or",
+            "category" : "restaurant",
+            "latitude" : "48.850588",
+            "longitude" : "2.3834752"
+        },
+        {
+            "name" : "Le bidule",
+            "category" : "bar",
+            "latitude" : "48.850244",
+            "longitude" : "2.383676"
+        },
+        {
+            "name" : "Les blouses blanches",
+            "category" : "bar",
+            "latitude" : "48.8500948",
+            "longitude" : "2.3820225"
+        }
+    ];
+
+    const content = document.querySelector('#content');
+
+    for (ville of villes) {
+        var marker = L.marker([ville.latitude, ville.longitude]).addTo(macarte);
+        marker.bindPopup(`${ville.category} - ${ville.name}`) 
+    }
+
 }
 window.onload = function(){
     // Fonction d'initialisation qui s'exécute lorsque le DOM est chargé
