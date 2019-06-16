@@ -15,6 +15,12 @@ close.addEventListener('click', () => {
     content.style.left = '-100%';
 });
 
+const showDescription = ({ layer : { options } })  => {
+    content.style.left = 0;
+    title.textContent = options.name;
+    category.textContent = options.category;
+};
+
 const initMap = () => {
     macarte = L.map('map', { zoomControl:false }).setView([lat, lon], 16);
 
@@ -112,22 +118,10 @@ const initMap = () => {
         marker.options.name = ville.name;
         marker.options.category = ville.category;
     }
-    restaurantLayer.on("click", ({ layer : { options } })  => {
-        content.style.left = 0;
-        title.textContent = options.name;
-        category.textContent = options.category;
-    });
-    schoolLayer.on("click", ({ layer : { options } })  => {
-        content.style.left = 0;
-        title.textContent = options.name;
-        category.textContent = options.category;
-    });
-    barLayer.on("click", ({ layer : { options } })  => {
-        content.style.left = 0;
-        title.textContent = options.name;
-        category.textContent = options.category;
-    });
-
+    
+    restaurantLayer.on("click", e => showDescription(e));
+    schoolLayer.on("click", e => showDescription(e));
+    barLayer.on("click", e => showDescription(e));
 };
 
 window.onload = function(){
