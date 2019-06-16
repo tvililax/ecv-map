@@ -21,6 +21,15 @@ const showDescription = ({ layer : { options } })  => {
     category.textContent = options.category;
 };
 
+const filter = layout => {
+    if (layout === 'bar'){
+        barLayer.clearLayers();
+    } else {
+        restaurantLayer.clearLayers();
+    }
+    filter = layout;
+}
+
 const initMap = () => {
     macarte = L.map('map', { zoomControl:false }).setView([lat, lon], 16);
 
@@ -96,15 +105,9 @@ const initMap = () => {
         iconAnchor: [22,60],         
     });
  
-    restaurantList.addEventListener('click', () => {
-        barLayer.clearLayers();
-        filter = "bar";
-    });
-    
-    bar.addEventListener('click', () => {
-        restaurantLayer.clearLayers();
-        filter = "restaurant";
-    });
+    restaurantList.addEventListener('click', () => filter('bar'));
+    bar.addEventListener('click', () => filter('restaurant'));
+
     for (ville of villes) {
         let marker = null;
         if (ville.category === "restaurant") {
