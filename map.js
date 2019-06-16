@@ -1,7 +1,8 @@
-// On initialise la latitude et la longitude de Paris (centre de la carte)
-var macarte = null;
-var lat = 48.851245;
-var lon = 2.382195;
+let macarte = null;
+let filter = '';
+const lat = 48.851245;
+const lon = 2.382195;
+
 const close = document.querySelector('#close');
 const content = document.querySelector('#content');
 const title = document.querySelector('#content h1');
@@ -9,28 +10,24 @@ const category = document.querySelector('#content p');
 const restaurantList = document.querySelector('#restaurant');
 const bar = document.querySelector('#bar');
 const reset = document.querySelector('#reset');
-let filter = '';
+
 close.addEventListener('click', () => {
     content.style.left = '-100%';
 });
 
-// Fonction d'initialisation de la carte
-function initMap(disabled = null) {
+const initMap = () => {
     macarte = L.map('map', { zoomControl:false }).setView([lat, lon], 16);
 
-    // Créer l'objet "macarte" et l'insèrer dans l'élément HTML qui a l'ID "map"
-    // Leaflet ne récupère pas les cartes (tiles) sur un serveur par défaut. Nous devons lui préciser où nous souhaitons les récupérer. Ici, openstreetmap.fr
     L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
-        // Il est toujours bien de laisser le lien vers la source des données
         attribution: 'données © <a href="//osm.org/copyright">OpenStreetMap</a>/ODbL - rendu <a href="//openstreetmap.fr">OSM France</a>',
         minZoom: 1,
         maxZoom: 20
     }).addTo(macarte);
-    var barLayer = L.featureGroup().addTo(macarte);
-    var schoolLayer = L.featureGroup().addTo(macarte);
-    var restaurantLayer = L.featureGroup().addTo(macarte);
+    const barLayer = L.featureGroup().addTo(macarte);
+    const schoolLayer = L.featureGroup().addTo(macarte);
+    const restaurantLayer = L.featureGroup().addTo(macarte);
     
-    var villes = [
+    const villes = [
         {
             "name" : "ECV Digital",
             "category" : "ecole",
@@ -103,15 +100,15 @@ function initMap(disabled = null) {
         filter = "restaurant";
     });
     for (ville of villes) {
-        if (ville.category === "restaurant" && (disabled === "restaurant" || disabled === null)) {
-            var marker = L.marker([ville.latitude, ville.longitude], {icon: restaurant}).addTo(restaurantLayer);
-        } else if (ville.category === "ecole" && (disabled === "ecole" || disabled === null)) {
-            var marker = L.marker([ville.latitude, ville.longitude], {icon: school}).addTo(schoolLayer);
-        } else if (ville.category === "bar" && (disabled === "bar" || disabled === null)) {
-            var marker = L.marker([ville.latitude, ville.longitude]).addTo(barLayer);
+        let marker = null;
+        if (ville.category === "restaurant") {
+            marker = L.marker([ville.latitude, ville.longitude], {icon: restaurant}).addTo(restaurantLayer);
+        } else if (ville.category === "ecole") {
+            marker = L.marker([ville.latitude, ville.longitude], {icon: school}).addTo(schoolLayer);
         } else {
-            continue;
+            marker = L.marker([ville.latitude, ville.longitude]).addTo(barLayer);
         }
+
         marker.options.name = ville.name;
         marker.options.category = ville.category;
     }
@@ -131,7 +128,8 @@ function initMap(disabled = null) {
         category.textContent = options.category;
     });
 
-}
+};
+
 window.onload = function(){
     initMap(); 
 };
