@@ -1,19 +1,19 @@
-body{
+body {
     margin:0 auto;
 }
-#map{
+#map {
     position: absolute;
     z-index: 0;
     height: 100vh;
     width: 100%;
 }
-.nav{
+.nav {
     position: absolute;
 }
-.nav ul{
+.nav ul {
     list-style: none;
 }
-#content{
+#content {
     position: absolute;
     height: 100vh;
     width: 100%;
